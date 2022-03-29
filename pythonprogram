@@ -1,0 +1,97 @@
+adatok = []
+with open('tavirathu13.txt') as fajl:
+    for sor in fajl:
+        sor = sor.strip()
+        sor = sor.split()
+        varos, idopont, szel, ho = sor[0], sor[1], sor[2], sor[3]
+        ho = int(ho)
+        idopont = f'{idopont[0:2]}:{idopont[2:]}'
+        adat = [varos, idopont, szel, ho]
+        adatok.append(adat)
+print("2. feladat")
+bekertvaros = input('Adja meg a település kódját! Település: ')
+for adat in adatok:
+    varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+    if varos == bekertvaros:
+        utido = adat[1]
+print(utido)
+
+minho=100
+maxho=0
+
+print('3. feladat')
+for adat in adatok:
+    varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+    if ho < minho:
+        minho = ho
+        minvaros = varos
+        minido = idopont
+print(f'A legalacsonyabb hőmérséklet:{minvaros} {minido} {minho} fok.')
+
+for adat in adatok:
+    varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+    if ho > maxho:
+        maxho=ho
+        maxvaros=varos
+        maxido=idopont
+print(f'A legmagasabb hőmérséklet:{maxvaros} {maxido} {maxho} fok.')
+print('4. feladat')
+i=0
+for adat in adatok:
+    varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+    if szel == '00000':
+        print(varos, idopont)
+        i+=1
+if i == 0:
+    print('Nem volt szélcsend a mérések idején.')
+print('5. feladat')
+varosok=[]
+for adat in adatok:
+    varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+    if varos not in varosok:
+        varosok.append(varos)
+#print(varosok)
+for telep in varosok:
+    atlag=0
+    varosho=[]
+    kozepho=[]
+    egy, het, tihar, tikil= [], [], [], []
+    for adat in adatok:
+        varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+        if telep == varos:
+            varosho.append(ho)
+            ora=idopont[0:2]
+            if ora == '01':
+                egy.append(ho)
+            if ora == '07':
+                het.append(ho)
+            if ora == '13':
+                tihar.append(ho)
+            if ora == '19':
+                tikil.append(ho)
+#    print(telep, egy, het, tihar, tikil)
+    szorzatuk=len(egy)*len(het)*len(tihar)*len(tikil)
+    kozepho=egy+het+tihar+tikil
+    atlag=round(sum(kozepho)/len(kozepho))
+#    print(atlag)
+    varosmax=max(varosho)
+    varosmin=max(varosho)
+    ingad=varosmax-varosmin
+    if szorzatuk > 0:
+        print(f'{telep} Középhőmérséklet: {atlag}; Hőmérséklet-ingadozás: {ingad}')
+    else:
+        print(f'{telep} NA; {atlag}; Hőmérséklet-ingadozás: {ingad}')
+print('6. feladat')
+for telep in varosok:
+    fajlnev=f'{telep}.txt'
+    kiir=''
+    kiir+=f'{telep}\n'
+    for adat in adatok:
+        varos, idopont, szel, ho = adat[0], adat[1], adat[2], adat[3]
+        if varos == telep:
+            szelero=int(szel[-2:])
+            abra=szelero*'#'
+            kiir+=f'{idopont} {abra}\n'
+#    print(kiir)
+    with open (f'{fajlnev}', 'w') as fajl:
+        fajl.writelines(kiir)
